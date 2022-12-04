@@ -1,0 +1,28 @@
+$text: black;
+$primary: #e8871e;
+$grey-darker: #282a2a;
+$grey-dark: #3c3e3e;
+$grey-light: #979b9b;
+$link: #5f5fe4;
+$success: #224d19;
+$danger: #970c0f;
+// section
+$section-padding: 1rem 0.8rem;
+$section-padding-desktop: 1.3rem 1rem;
+//header 
+$navbar-background-color: $grey-darker;
+// header searchbar
+$input-placeholder-color: black;
+$input-icon-color: black;
+// footer
+$footer-background-color: $grey-darker;
+$footer-color: white;
+$footer-padding: 0;
+// title
+$title-color: black;
+$title-weight: bold;
+// subtitle
+$subtitle-color: black;
+$subtitle-weight: bold;
+
+@import "~bulma/bulma";
