@@ -22,18 +22,18 @@ COPY ./requirements.txt /
 RUN pip install -r ./requirements.txt
 
 # upload scripts
-COPY ./scripts/entrypoint.sh /
-RUN sed -i 's/\r$//g' /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY ./scripts/entrypoint /
+RUN sed -i 's/\r$//g' /entrypoint
+RUN chmod +x /entrypoint
 
-COPY ./scripts/start_dev.sh /
-RUN sed -i 's/\r$//g' /start_dev.sh
-RUN chmod +x /start_dev.sh
+COPY ./scripts/start_dev /
+RUN sed -i 's/\r$//g' /start_dev
+RUN chmod +x /start_dev
 
-COPY ./scripts/start_prod.sh /
-RUN sed -i 's/\r$//g' /start_prod.sh
-RUN chmod +x /start_prod.sh
+COPY ./scripts/start_prod /
+RUN sed -i 's/\r$//g' /start_prod
+RUN chmod +x /start_prod
 
 WORKDIR /app
 
-ENTRYPOINT ["/scripts/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint"]

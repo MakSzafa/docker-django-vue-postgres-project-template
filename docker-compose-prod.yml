@@ -8,13 +8,12 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    image: production_backend
     container_name: production_backend
     depends_on:
       - postgres
     volumes:
       - ./backend:/app
-    command: /start_prod.sh
+    command: /start_prod
     restart: always
     env_file: .env
     ports:
@@ -24,19 +23,20 @@ services:
     build:  
       context: ./frontend
       dockerfile: Dockerfile
-    image: local_frontend
-    container_name: local_frontend
+    container_name: production_frontend
     depends_on:
-      - django
+      - backend
     volumes:
       - ./frontend:/app
+      - ./frontend/nginx:/etc/nginx/conf.d
     restart: always
     env_file: .env
     ports:
       - 81:80
-  
+
   postgres:
     image: postgres:15.1
+    container_name: production_db
     volumes:
       - production_postgres_data:/var/lib/postgresql/data
     env_file: .env
