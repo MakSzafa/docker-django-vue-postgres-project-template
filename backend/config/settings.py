@@ -7,6 +7,7 @@ https://docs.djangoproject.com/en/dev/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
+import datetime
 import environ
 from pathlib import Path
 
@@ -28,8 +29,10 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'django_extensions',
+    'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'corsheaders',
 ]
 
@@ -64,6 +67,13 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
 ]
+
+# EMAIL CONFIGURATION
+# ------------------------------------------------------------------------------
+EMAIL_PORT = env.int('EMAIL_PORT', default='1025')
+EMAIL_HOST = env.str('EMAIL_HOST', default='gmail')
+EMAIL_HOST_USER = env.str('EMAIL_HOST_USER', default='qwerty@gmail.com')
+EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD', default='1234')
 
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -107,15 +117,10 @@ USE_TZ = True
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = ROOT_DIR / 'staticfiles'
+STATIC_ROOT = ROOT_DIR / 'static/'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = '/staticfiles/'
-
-# See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = [
-    '/static',
-]
+STATIC_URL = '/static/'
 
 # MEDIA CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -172,9 +177,8 @@ AUTH_USER_MODEL = 'users.User'
 REST_FRAMEWORK = {
     'UPLOADED_FILES_USE_URL': False,
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication'
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
@@ -185,4 +189,9 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.FileUploadParser'
     ]
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(minutes=5), 
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=1), 
 }

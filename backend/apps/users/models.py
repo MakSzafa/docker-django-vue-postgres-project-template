@@ -1,66 +1,68 @@
-from uuid import uuid4
-
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 
-
 class UserManager(BaseUserManager):
-    def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
+    """
+    Custom user model manager where email is the unique identifiers
+    for authentication instead of usernames.
+    """
+    def create_user(self, email, password, **extra_fields):
         """
-        Creates and saves a User with the given username, email and password.
+        Create and save a User with the given email and password.
         """
-        user = self.model(email=self.normalize_email(email),
-                          is_active=True,
-                          is_staff=is_staff,
-                          is_superuser=is_superuser,
-                          last_login=timezone.now(),
-                          registered_at=timezone.now(),
-                          **extra_fields)
+        if not email:
+            raise ValueError(('Users must have an email address'))
+
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
+
         return user
 
-    def create_user(self, email=None, password=None, **extra_fields):
-        is_staff = extra_fields.pop('is_staff', False)
-        is_superuser = extra_fields.pop('is_superuser', False)
-        return self._create_user(email, password, is_staff, is_superuser, **extra_fields)
-
     def create_superuser(self, email, password, **extra_fields):
-        return self._create_user(email, password, is_staff=True, is_superuser=True, **extra_fields)
+        """
+        Create and save a Superuser with the given email and password.
+        """
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
 
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError(('Superuser must have is_staff=True.'))
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError(('Superuser must have is_superuser=True.'))
+
+        return self.create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name='Email', unique=True, max_length=255)
+
+    # define user model fields here
     first_name = models.CharField(verbose_name='First name', max_length=30, default='first')
     last_name = models.CharField(verbose_name='Last name', max_length=30, default='last')
-    avatar = models.ImageField(verbose_name='Avatar', blank=True)
-    token = models.UUIDField(verbose_name='Token', default=uuid4, editable=False)
+    avatar = models.ImageField(verbose_name='Avatar', blank=True, null=True)
+    password_reset_token = models.CharField(verbose_name='Password reset token', max_length=255, blank=True, null=True)
 
     is_admin = models.BooleanField(verbose_name='Admin', default=False)
-    is_active = models.BooleanField(verbose_name='Active', default=True)
     is_staff = models.BooleanField(verbose_name='Staff', default=False)
-    registered_at = models.DateTimeField(verbose_name='Registered at', auto_now_add=timezone.now)
+    is_active = models.BooleanField(verbose_name='Active', default=True)
+    registered_at = models.DateTimeField(verbose_name='Registered at', default=timezone.now)
 
-    # Fields settings
-    EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
     objects = UserManager()
 
-    class Meta:
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
-
+    # define properties which can be used in serializers based on fields here
     @property
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
-    full_name.fget.short_description = 'Full name'
 
     @property
     def short_name(self):
         return f'{self.last_name} {self.first_name[0]}.'
-    short_name.fget.short_description = 'Short name'
 
     def get_full_name(self):
         return self.full_name
@@ -68,5 +70,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.short_name
 
+    def has_perm(self, perm, obj=None):
+
+        return True
+
+    def has_module_perms(self, app_label):
+
+        return True
+
     def __str__(self):
-        return self.full_name
+        return self.email
