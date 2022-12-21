@@ -11,6 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
     short_name = serializers.SerializerMethodField()
 
     registered_at = serializers.DateTimeField(format='%H:%M %d.%m.%Y', read_only=True)
+    url = serializers.HyperlinkedIdentityField(view_name='user-detail', lookup_field='pk')
     
     def get_avatar(self, obj):
         return obj.avatar.url if obj.avatar else settings.STATIC_URL + 'images/default_avatar.png'
@@ -23,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'avatar', 'full_name', 'short_name', 'registered_at']
+        fields = ['id', 'url', 'email', 'avatar', 'full_name', 'short_name', 'registered_at']
 
 
 class UserWriteSerializer(serializers.ModelSerializer):
