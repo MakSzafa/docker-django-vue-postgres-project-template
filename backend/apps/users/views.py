@@ -55,7 +55,7 @@ class UserViewSet(viewsets.ModelViewSet):
             params = {'user': user, 'DOMAIN': 'https://example.com'}
             send_mail(
                 subject='Password reset',
-                message=render_to_string('mail/password_reset.txt', params),
+                message=render_to_string('templates/password_reset.txt', params),
                 from_email='from@example.com',
                 recipient_list=[request.data['email']],
             )
