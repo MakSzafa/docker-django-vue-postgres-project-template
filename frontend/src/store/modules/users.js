@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const state = {
   users: [],
+  user: {},
   emailFail: false,
   tokenFail: false
 }

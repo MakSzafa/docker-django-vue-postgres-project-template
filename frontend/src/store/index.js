@@ -1,6 +1,6 @@
 import { createStore } from "vuex";
 
-import users from '@/store/services/users'
+import users from '@/store/modules/users'
 import auth from '@/store/modules/auth'
 
 export default createStore({
