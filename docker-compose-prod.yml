@@ -32,7 +32,7 @@ services:
     restart: always
     env_file: .env
     ports:
-      - 81:80
+      - 8080:8080
 
   postgres:
     image: postgres:15.1

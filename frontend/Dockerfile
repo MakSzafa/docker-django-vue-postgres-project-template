@@ -9,14 +9,20 @@ RUN npm install
 
 COPY . ./
 
-RUN npm run build
+# run for development mode
+CMD ["npm", "run", "serve"]
 
-FROM nginx:1.21
+# run for production mode 
 
-RUN apt-get update \
-    && apt-get install -y wget \
-    && rm -rf /var/lib/apt/lists/*
+# RUN npm run build
 
-RUN rm -rf /usr/share/nginx/html/*
-COPY --from=build /app/nginx/nginx.conf /etc/nginx/conf.d/default.conf:ro
-COPY --from=build /app/dist /usr/share/nginx/html
+
+# FROM nginx:1.21
+
+# RUN apt-get update \
+#     && apt-get install -y wget \
+#     && rm -rf /var/lib/apt/lists/*
+
+# RUN rm -rf /usr/share/nginx/html/*
+# COPY --from=build /app/nginx/nginx.conf /etc/nginx/conf.d/default.conf:ro
+# COPY --from=build /app/dist /usr/share/nginx/html

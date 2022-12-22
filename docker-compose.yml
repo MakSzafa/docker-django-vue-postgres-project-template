@@ -28,11 +28,14 @@ services:
       - backend
     volumes:
       - ./frontend:/app
+      - /app/node_modules
       - ./frontend/nginx:/etc/nginx/conf.d
     restart: always
     env_file: .env
     ports:
-      - 81:80
+      - 8080:8080
+    environment: 
+      - CHOKIDAR_USEPOLLING=true
   
   postgres:
     image: postgres:15.1

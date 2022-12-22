@@ -84,6 +84,7 @@ File containing environmental variables, don't share production version of this 
 - `/backend/scripts/start_prod` - Gunicorn has to be configured to serve project
 
 - `/frontend/nginx/nginx.conf` - has to be checked before running production mode
+- `/frontend/Dockerfile` - follow file instruction
 - `/frontend/src/main.js` - axios.defaults.baseURL should be edited
 
 -  `.env` - variables has to be recreated for production mode
