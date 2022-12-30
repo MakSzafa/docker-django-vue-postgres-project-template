@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>Example Login Page</h1>
+    <h1>Example Signup Page</h1>
     <form @submit.prevent="submitForm">
       <div class="field">
         <label class="label">E-mail</label>
@@ -16,7 +16,7 @@
       </div>
       <div class="field submit-button">
         <div class="control">
-          <button class="button is-dark">Login</button>
+          <button class="button is-dark">Sign up</button>
         </div>
       </div>
     </form>
@@ -25,7 +25,7 @@
 
 <script>
 export default {
-  name: "LoginPage",
+  name: "SignupPage",
   data() {
     return {
       email: "",
@@ -39,7 +39,7 @@ export default {
         password: this.password,
       };
 
-      await this.$store.dispatch("login", logUser);
+      await this.$store.dispatch("createUser", logUser);
 
       const toPath = this.$route.query.to || "/";
 

@@ -1,70 +1,73 @@
-import axios from 'axios'
+import axios from "axios";
 
 const state = {
-  loggedIn: false,
-  profile: {},
-  validation: {email: true},
-  authError: false
-}
+  isAuthenticated: false,
+  authError: false,
+};
 
-const getters = {}
+const getters = {};
 
 const mutations = {
-  login (state) {
-    state.loggedIn = true
+  login(state, payload) {
+    localStorage.setItem("accessToken", payload.access);
+    localStorage.setItem("refreshToken", payload.refresh);
+    axios.defaults.headers.common["Authorization"] = "Bearer " + payload.access;
+    state.isAuthenticated = true;
   },
-  logout (state) {
-    state.loggedIn = false
+  logout(state) {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    axios.defaults.headers.common["Authorization"] = "";
+    state.isAuthenticated = false;
   },
-  setProfile (state, payload) {
-    state.profile = payload
+  setIsAuthenticated(state, bool) {
+    state.isAuthenticated = bool;
   },
-  setValidationEmail (state, bool) {
-    state.validation.email = bool
+  setAuthError(state, bool) {
+    state.authError = bool;
   },
-  setAuthError (state, bool) {
-    state.authError = bool
-  }
-}
+};
 
 const actions = {
-  postLogin (context, payload) {
-    return axios.post('/api/users/login/', payload)
-      .then(response => {})
-      .catch(e => {
-        context.commit('setAuthError', true)
-        console.log(e)
-      })
+  async login(context, payload) {
+    try {
+      const response = await axios.post("/api/token/", payload);
+      context.commit("login", response.data);
+      context.commit("setAuthError", false);
+    } catch (e) {
+      context.commit("setAuthError", true);
+      console.log(e);
+    }
   },
-  postRegister (context, payload) {
-    return axios.post('/api/users/register/', payload)
-      .then(response => {
-        if (response.data.status === 210) {
-          context.commit('setValidationEmail', false)
-        } else {
-          context.commit('setValidationEmail', true)
-          context.commit('login')
-          context.commit('setProfile', response.data)
-        }
-      })
-      .catch(e => { console.log(e) })
+  async refreshAccessToken(context) {
+    if (localStorage.getItem("refreshToken")) {
+      try {
+        const payload = {
+          refresh: localStorage.getItem("refreshToken"),
+        };
+        const response = await axios.post("/api/token/refresh/", payload);
+        localStorage.setItem("accessToken", response.data.access);
+        axios.defaults.headers.common["Authorization"] =
+          "Bearer " + response.data.access;
+        context.commit("setIsAuthenticated", true);
+        context.commit("setAuthError", false);
+      } catch (e) {
+        console.log(e);
+        axios.defaults.headers.common["Authorization"] = "";
+        context.commit("setIsAuthenticated", false);
+        context.commit("setAuthError", true);
+      }
+    } else {
+      axios.defaults.headers.common["Authorization"] = "";
+      context.commit("setIsAuthenticated", false);
+      context.commit("setAuthError", true);
+    }
   },
-  getProfile (context) {
-    return axios.get('/api/users/profile')
-      .then(response => {
-        context.commit('login')
-        context.commit('setProfile', response.data)
-      })
-      .catch(e => {
-        context.commit('logout')
-        console.log(e)
-      })
-  }
-}
+};
 
 export default {
   state,
   getters,
   mutations,
-  actions
-}
+  actions,
+};

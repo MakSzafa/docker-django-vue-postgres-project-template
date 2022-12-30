@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import store from "../store";
 
 import Home from "../views/Home.vue";
-import Login from "../views/LoginPage.vue"
+import Login from "../views/LoginPage.vue";
+import Signup from "../views/SignupPage.vue";
 
 const routes = [
   {
@@ -19,7 +20,12 @@ const routes = [
     name: "login",
     component: Login,
   },
-]
+  {
+    path: "/signup",
+    name: "signup",
+    component: Signup,
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -33,7 +39,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (
     to.matched.some((record) => record.meta.requireLogin) &&
-    !store.state.isAuthenticated
+    !store.state.auth.isAuthenticated
   ) {
     next({ name: "login", query: { to: to.path } });
   } else {
