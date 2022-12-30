@@ -25,7 +25,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action == 'create':
             permission_classes = []
         else:
-            permission_classes = [] # permissions.isAuthenticated permissions.IsAuthenticatedOrReadOnly
+            permission_classes = [permissions.IsAuthenticated] # permissions.IsAuthenticated permissions.IsAuthenticatedOrReadOnly
 
         return [permission() for permission in permission_classes]
 
