@@ -70,10 +70,6 @@ Directory containing customized Django Users app
 
 Simple frontend serving nginx configuration
 
-### `/frontend/src`
-
-- `registerServiceWorker.js` - default PWA (Progressive Web App) service worker file
-
 ### `.env`
 
 File containing environmental variables, don't share production version of this file in public! 
