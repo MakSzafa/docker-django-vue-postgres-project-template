@@ -9,12 +9,14 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 """
 import datetime
 import environ
+import os
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
+env.read_env(os.path.join(ROOT_DIR, '.env'))
 
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -63,17 +65,15 @@ DEBUG = env.bool('DEBUG')
 SECRET_KEY = env.str('SECRET_KEY')
 
 # DOMAINS
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080'
-]
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS')
 
 # EMAIL CONFIGURATION
 # ------------------------------------------------------------------------------
-EMAIL_PORT = env.int('EMAIL_PORT', default='1025')
-EMAIL_HOST = env.str('EMAIL_HOST', default='gmail')
-EMAIL_HOST_USER = env.str('EMAIL_HOST_USER', default='qwerty@gmail.com')
-EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD', default='1234')
+EMAIL_PORT = env.int('EMAIL_PORT')
+EMAIL_HOST = env.str('EMAIL_HOST')
+EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
 
 # DATABASE CONFIGURATION
 # ------------------------------------------------------------------------------
