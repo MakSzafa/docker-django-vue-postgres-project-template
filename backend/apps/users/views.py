@@ -7,8 +7,9 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from apps.users.models import User
-from apps.users.serializers import UserSerializer, UserWriteSerializer, UserPasswordResetSerializer, UserPasswordResetChangeSerializer
+from apps.users.serializers import UserSerializer, UserWriteSerializer, UserPasswordResetSerializer, UserPasswordResetChangeSerializer, MyTokenObtainPairSerializer
 
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -76,3 +77,6 @@ class UserViewSet(viewsets.ModelViewSet):
                 return Response(status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
