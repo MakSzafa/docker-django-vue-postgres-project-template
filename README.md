@@ -34,7 +34,6 @@ You can install it from official site: [Docker](https://docs.docker.com/get-dock
 - [Django filters](https://django-filter.readthedocs.io/en/stable/index.html)
 - [Django simple JWT](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/)
 - [Gunicorn](https://docs.gunicorn.org/en/stable/index.html)
-- [Python environ](https://pypi.org/project/python-environ/)
 - [Axios](https://axios-http.com/docs/example)
 
 ## Project structure
@@ -44,10 +43,10 @@ You can install it from official site: [Docker](https://docs.docker.com/get-dock
 | `/backend`           | Django project & backend config & API      |
 | `/backend/apps`      | Django backend apps entry point            |
 | `/backend/config`    | Django configuration files entry point     |
+| `/backend/.env`      | Example environmental variables            |
 | `/frontend`          | Vue App & frontend config & Nginx          |
 | `/frontend/nginx`    | Nginx configuration                        |
 | `/frontend/src`      | Vue app entry point                        |
-| `.env`               | Example environmental variables            |
 | `docker-compose-prod.yml` | Docker compose configuration for production  |
 | `docker-compose.yml` | Docker compose configuration for development  |
 
@@ -66,24 +65,31 @@ Directory containing customized Django Users app
 - `settings.py` - you can edit backend related issues  
 - `urls.py` - you can add new apps endpoints 
 
+### `/backend/.env`
+
+File containing environmental variables, don't share production version of this file in public!
+
 ### `/frontend/nginx`
 
 Simple frontend serving nginx configuration
-
-### `.env`
-
-File containing environmental variables, don't share production version of this file in public! 
-
+ 
 ## Deploy to production
 
-- `/backend/config/settings.py` - CORS_ALLOWED_ORIGINS should be transformed into env variable
-- `/backend/scripts/start_prod` - Gunicorn has to be configured to serve project
-
-- `/frontend/nginx/nginx.conf` - has to be checked before running production mode
-- `/frontend/Dockerfile` - follow file instruction
-- `/frontend/src/main.js` - axios.defaults.baseURL should be edited
-
--  `.env` - variables has to be recreated for production mode
+- backend port has to be updated in:
+    - `/docker-compose.yml`
+    - `/docker-compose-prod.yml`
+    - `/backend/scripts/start_dev`
+    - `/backend/scripts/start_prod`
+    - `/frontend/nginx/nginx.conf`
+    - `/frontend/src/main.js`
+- frontend port has to be updated in:
+    - `/docker-compose.yml`
+    - `/docker-compose-prod.yml`
+    - `/backend/.env`
+    - `/frontend/vue.config.js`
+    - `/frontend/nginx/nginx.conf`
+- `/frontend/Dockerfile` - has to be switched in production mode
+-  `/backend/.env` - variables has to be recreated for production mode
 
 Run command: `docker compose -f docker-compose-prod.yml up -d --build` to start your production mode and put it in the background
 
@@ -103,3 +109,6 @@ To create an admin account use:
 
 To create an admin account from data stored in .env file use:
 `docker compose run backend python manage.py createsuperuser --noinput`
+
+To create an admin account in production mode use:
+`docker compose -f docker-compose-prod.yml run backend python manage.py createsuperuser`
