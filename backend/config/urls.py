@@ -9,7 +9,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-router = routers.DefaultRouter(trailing_slash = False)
+router = routers.DefaultRouter()
 
 # register apps here
 router.register(r'users', UserViewSet)

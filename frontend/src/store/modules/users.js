@@ -27,14 +27,14 @@ const mutations = {
 const actions = {
   async getUsersList(context) {
     try {
-      const response = await axios.get("/api/users");
+      const response = await axios.get("/api/users/");
       context.commit("setUsers", response.data);
     } catch (e) {
       console.log(e.response);
       if (e.response.data.code === "token_not_valid") {
         context.dispatch("refreshAccessToken");
         try {
-          const response = await axios.get("/api/users");
+          const response = await axios.get("/api/users/");
           context.commit("setUsers", response.data);
         } catch (e) {
           console.log(e);
@@ -44,14 +44,14 @@ const actions = {
   },
   async getUser(context, userId) {
     try {
-      const response = await axios.get(`/api/users/${userId}`);
+      const response = await axios.get(`/api/users/${userId}/`);
       context.commit("setUser", response.data);
     } catch (e) {
       console.log(e.response);
       if (e.response.data.code === "token_not_valid") {
         context.dispatch("refreshAccessToken");
         try {
-          const response = await axios.get(`/api/users/${userId}`);
+          const response = await axios.get(`/api/users/${userId}/`);
           context.commit("setUser", response.data);
         } catch (e) {
           console.log(e);
@@ -64,12 +64,12 @@ const actions = {
     delete payload.avatar;
 
     try {
-      const response = await axios.post("/api/users", payload);
+      const response = await axios.post("/api/users/", payload);
       // Image upload
       if (typeof avatar === "object") {
         let data = new FormData();
         data.append("avatar", avatar);
-        await axios.patch(`/api/users/${response.data.id}`, data);
+        await axios.patch(`/api/users/${response.data.id}/`, data);
       }
       const loginPayload = {
         email: payload.email,
@@ -85,12 +85,12 @@ const actions = {
     delete payload.avatar;
 
     try {
-      const response = await axios.patch(`/api/users/${payload.id}`, payload);
+      const response = await axios.patch(`/api/users/${payload.id}/`, payload);
       // Image upload
       if (typeof avatar === "object") {
         let data = new FormData();
         data.append("avatar", avatar);
-        return axios.patch(`/api/users/${payload.id}`, data);
+        return axios.patch(`/api/users/${payload.id}/`, data);
       }
     } catch (e) {
       console.log(e.response);
@@ -98,14 +98,14 @@ const actions = {
         context.dispatch("refreshAccessToken");
         try {
           const response = await axios.patch(
-            `/api/users/${payload.id}`,
+            `/api/users/${payload.id}/`,
             payload
           );
           // Image upload
           if (typeof avatar === "object") {
             let data = new FormData();
             data.append("avatar", avatar);
-            return axios.patch(`/api/users/${payload.id}`, data);
+            return axios.patch(`/api/users/${payload.id}/`, data);
           }
         } catch (e) {
           console.log(e);
@@ -115,13 +115,13 @@ const actions = {
   },
   async deleteUser(context, userId) {
     try {
-      const response = await axios.delete(`/api/users/${userId}`);
+      const response = await axios.delete(`/api/users/${userId}/`);
     } catch (e) {
       console.log(e.response);
       if (e.response.data.code === "token_not_valid") {
         context.dispatch("refreshAccessToken");
         try {
-          const response = await axios.delete(`/api/users/${userId}`);
+          const response = await axios.delete(`/api/users/${userId}/`);
         } catch (e) {
           console.log(e);
         }
