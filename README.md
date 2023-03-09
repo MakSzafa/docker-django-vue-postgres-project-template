@@ -81,13 +81,14 @@ Simple frontend serving nginx configuration
     - `/backend/scripts/start_dev`
     - `/backend/scripts/start_prod`
     - `/frontend/nginx/nginx.conf`
-    - `/frontend/src/main.js`
 - frontend port has to be updated in:
     - `/docker-compose.yml`
     - `/docker-compose-prod.yml`
     - `/backend/.env`
     - `/frontend/vue.config.js`
     - `/frontend/nginx/nginx.conf`
+- `/frontend/nginx/nginx.conf` - change allowed IP for admin on directly on server!
+- `/frontend/src/main.js` - axios.defaults.baseURL has to be changed to your website
 - `/frontend/Dockerfile` - has to be switched in production mode
 -  `/backend/.env` - variables has to be recreated for production mode
 
